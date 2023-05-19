@@ -56,7 +56,7 @@ void FitData(const char* filename, const char* modelName) {
 }
 
 int main() {
-  const char* filename = "/home/goncalo/LFEA/test/main/data.txt";  // Replace with your data file name
+  const char* filename = "/home/goncalo/LFEA/analysis/main/data.txt";  // Replace with your data file name
   const char* modelName = "gaus";    // Replace with your model name
   FitData(filename, modelName);
   return 0;
