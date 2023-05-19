@@ -35,7 +35,7 @@ Follow these steps to use the code:
 7. Run the executable:
    - Execute the compiled program by running the following command:
      ```
-     ./fit_data
+     ./fittingModel1
      ```
 
 8. View the results:
