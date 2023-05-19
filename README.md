@@ -16,7 +16,7 @@ Follow these steps to use the code:
    - Create a text file named `data.txt`.
    - Each line of the file should contain space-separated x and y values representing your data points.
 
-2. Open the code file `fit_data.cpp` in a text editor.
+2. Open the code file `fittingModel1.cpp` in a text editor.
 
 3. Specify the fitting model:
    - In the `main` function, modify the `modelName` variable to specify your desired fitting model. For example, use `"gaus"` for a Gaussian model.
