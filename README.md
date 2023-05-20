@@ -29,7 +29,7 @@ Follow these steps to use the code:
 6. Compile the code:
    - Run the following command to compile the code using the `root-config` utility:
      ```
-     g++ -o fit_data fit_data.cpp `root-config --cflags --libs`
+     g++ -o fittingModel1 fittingModel1.cpp `root-config --cflags --libs`
      ```
 
 7. Run the executable:
