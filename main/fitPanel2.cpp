@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <sstream>
 #include <TGraphErrors.h>
 #include <TCanvas.h>
 #include <TF1.h>
@@ -21,26 +23,34 @@ void FitData()
 
     // Arrays to store data
     std::vector<double> xValues;
+    std::vector<double> xErrors;
     std::vector<double> yValues;
     std::vector<double> yErrors;
 
-    double x, y, yErr;
-    while (file >> x >> y >> yErr)
+    std::string line;
+    while (std::getline(file, line))
     {
-        xValues.push_back(x);
-        yValues.push_back(y);
-        yErrors.push_back(yErr);
+        std::istringstream iss(line);
+        double x, xErr, y, yErr;
+        if (iss >> x >> xErr >> y >> yErr)
+        {
+            xValues.push_back(x);
+            xErrors.push_back(xErr);
+            yValues.push_back(y);
+            yErrors.push_back(yErr);
+        }
     }
+
     file.close();
 
     // Create a TGraphErrors from the data
     int numPoints = xValues.size();
-    TGraphErrors *graph = new TGraphErrors(numPoints, &xValues[0], &yValues[0], nullptr, &yErrors[0]);
+    TGraphErrors *graph = new TGraphErrors(numPoints, &xValues[0], &yValues[0], &xErrors[0], &yErrors[0]);
 
-    graph->SetTitle("Rate VS Distance");
-    graph->GetXaxis()->SetTitle("Distance [cm]");
-    graph->GetYaxis()->SetTitle("Rate [counts/s]");
-    
+    graph->SetTitle("Calibration in Pulser Energy");
+    graph->GetXaxis()->SetTitle("Channel");
+    graph->GetYaxis()->SetTitle("Pulser Energy [MeV]");
+
     graph->GetXaxis()->CenterTitle(true);
     graph->GetYaxis()->CenterTitle(true);
 
@@ -48,15 +58,10 @@ void FitData()
     TCanvas *canvas = new TCanvas("canvas", "Data Fitting", 800, 600);
     graph->Draw("AP"); // "AP" option to display both markers and error bars
 
-    // Define a custom TF1 function
-    TF1 *fitFunc = new TF1("fitFunc", "[0] / pow(x,2) + [1]");
-
-    // Set initial parameter values and names
-    fitFunc->SetParameters(1.0, 0.0);
-    fitFunc->SetParNames("a", "b");
-
-    // Fit the graph to the custom function
-    graph->Fit(fitFunc, "R"); // "R" option for fit range using the graph's x-axis range
+    // Launch the ROOT Fit Panel
+    canvas->Update(); // Update the canvas to display the graph
+    canvas->cd();
+    graph->FitPanel();
 
     // Wait for the Fit Panel to be closed
     app.Run();

@@ -12,7 +12,7 @@ void FitData()
     TApplication app("app", nullptr, nullptr);
 
     // Read data from file
-    std::ifstream file("/home/goncalo/LFEA/analysis/main/energies.txt");
+    std::ifstream file("/home/goncalo/LFEA/analysis/main/cal1_gam.txt");
     if (!file.is_open())
     {
         std::cout << "Failed to open data file." << std::endl;
@@ -24,23 +24,23 @@ void FitData()
     std::vector<double> yValues;
     std::vector<double> yErrors;
 
-    double x, y, yErr;
-    while (file >> x >> y >> yErr)
+    double x, y;
+    while (file >> x >> y)
     {
         xValues.push_back(x);
         yValues.push_back(y);
-        yErrors.push_back(yErr);
     }
+
     file.close();
 
     // Create a TGraphErrors from the data
     int numPoints = xValues.size();
-    TGraphErrors *graph = new TGraphErrors(numPoints, &xValues[0], &yValues[0], nullptr, &yErrors[0]);
+    TGraph *graph = new TGraph(numPoints, &xValues[0], &yValues[0]);
 
-    graph->SetTitle("Rate VS Distance");
-    graph->GetXaxis()->SetTitle("Distance [cm]");
-    graph->GetYaxis()->SetTitle("Rate [counts/s]");
-    
+    graph->SetTitle("Nominal Energy Calibration");
+    graph->GetXaxis()->SetTitle("Channel");
+    graph->GetYaxis()->SetTitle("Energy [keV]");
+
     graph->GetXaxis()->CenterTitle(true);
     graph->GetYaxis()->CenterTitle(true);
 
@@ -48,15 +48,10 @@ void FitData()
     TCanvas *canvas = new TCanvas("canvas", "Data Fitting", 800, 600);
     graph->Draw("AP"); // "AP" option to display both markers and error bars
 
-    // Define a custom TF1 function
-    TF1 *fitFunc = new TF1("fitFunc", "[0] / pow(x,2) + [1]");
-
-    // Set initial parameter values and names
-    fitFunc->SetParameters(1.0, 0.0);
-    fitFunc->SetParNames("a", "b");
-
-    // Fit the graph to the custom function
-    graph->Fit(fitFunc, "R"); // "R" option for fit range using the graph's x-axis range
+    // Launch the ROOT Fit Panel
+    canvas->Update(); // Update the canvas to display the graph
+    canvas->cd();
+    graph->FitPanel();
 
     // Wait for the Fit Panel to be closed
     app.Run();
