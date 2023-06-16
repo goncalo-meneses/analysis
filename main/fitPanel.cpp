@@ -14,7 +14,7 @@ void FitData()
     TApplication app("app", nullptr, nullptr);
 
     // Read data from file
-    std::ifstream file("/home/goncalo/LFEA/analysis/main/cal1_gam.txt");
+    std::ifstream file("/home/goncalo/LFEA/analysis/main/cal2_gam.txt");
     if (!file.is_open())
     {
         std::cout << "Failed to open data file." << std::endl;
@@ -45,7 +45,7 @@ void FitData()
     int numPoints = xValues.size();
     TGraphErrors *graph = new TGraphErrors(numPoints, &xValues[0], &yValues[0], 0, &yErrors[0]);
 
-    graph->SetTitle("Calibration in Energy 1");
+    graph->SetTitle("Calibration in Energy 2");
     graph->GetXaxis()->SetTitle("Energy [keV]");
     graph->GetYaxis()->SetTitle("Channel");
 
