@@ -14,7 +14,7 @@ void FitData()
     TApplication app("app", nullptr, nullptr);
 
     // Read data from file
-    std::ifstream file("/home/goncalo/LFEA/analysis/main/co.txt");
+    std::ifstream file("/home/goncalo/LFEA/analysis/main/csG.txt");
     if (!file.is_open())
     {
         std::cout << "Failed to open data file." << std::endl;

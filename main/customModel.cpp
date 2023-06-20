@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <TGraphErrors.h>
 #include <TCanvas.h>
 #include <TF1.h>
@@ -12,7 +13,7 @@ void FitData()
     TApplication app("app", nullptr, nullptr);
 
     // Read data from file
-    std::ifstream file("/home/goncalo/LFEA/analysis/main/energies.txt");
+    std::ifstream file("/home/goncalo/LFEA/analysis/main/atenPb2.txt");
     if (!file.is_open())
     {
         std::cout << "Failed to open data file." << std::endl;
@@ -37,10 +38,10 @@ void FitData()
     int numPoints = xValues.size();
     TGraphErrors *graph = new TGraphErrors(numPoints, &xValues[0], &yValues[0], nullptr, &yErrors[0]);
 
-    graph->SetTitle("Rate VS Distance");
-    graph->GetXaxis()->SetTitle("Distance [cm]");
-    graph->GetYaxis()->SetTitle("Rate [counts/s]");
-    
+    graph->SetTitle("Atenuacao na Materia - Cesio e Polietileno");
+    graph->GetXaxis()->SetTitle("Espessura [g/cm^2]");
+    graph->GetYaxis()->SetTitle("Counts");
+
     graph->GetXaxis()->CenterTitle(true);
     graph->GetYaxis()->CenterTitle(true);
 
@@ -49,11 +50,13 @@ void FitData()
     graph->Draw("AP"); // "AP" option to display both markers and error bars
 
     // Define a custom TF1 function
-    TF1 *fitFunc = new TF1("fitFunc", "[0] / pow(x,2) + [1]");
+    TF1 *fitFunc = new TF1("fitFunc", "exp(-[0]*x) + [1]");
+
 
     // Set initial parameter values and names
-    fitFunc->SetParameters(1.0, 0.0);
+    fitFunc->SetParameters(0.001, 5000);
     fitFunc->SetParNames("a", "b");
+
 
     // Fit the graph to the custom function
     graph->Fit(fitFunc, "R"); // "R" option for fit range using the graph's x-axis range
